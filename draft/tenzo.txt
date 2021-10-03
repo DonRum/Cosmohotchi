@@ -1,1 +1,123 @@
+uint16_t last_val[3] = {0};
+uint16_t count = 0;
+
+
+uint16_t get_value()
+{
+	for(int i = 3; i >= 1; i--) last_val[i] = last_val[i-1];
+	HAL_ADC_Start(&hadc1);
+	last_val[0]  = (uint16_t) HAL_ADC_GetValue(&hadc1) >> 3;
+    HAL_ADC_Stop(&hadc1);
+    uint16_t result = 0;
+    for(int i = 0; i<3; i++) result+= last_val[i];
+    result /= 3;
+    return result;
+}
+
+
+void scale (uint16_t val)
+{
+	uint16_t a;
+	a = val/35;
+	switch (a){
+	case 0:
+		SSD1306_Puts ("0", &Font_11x18, 1);
+		break;
+	case 1:
+		SSD1306_Puts ("1", &Font_11x18, 1);
+		break;
+	case 2:
+		SSD1306_Puts ("2", &Font_11x18, 1);
+		break;
+	case 3:
+		SSD1306_Puts ("3", &Font_11x18, 1);
+		break;
+	case 4:
+		SSD1306_Puts ("4", &Font_11x18, 1);
+		break;
+	case 5:
+		SSD1306_Puts ("5", &Font_11x18, 1);
+		break;
+	case 6:
+		SSD1306_Puts ("6", &Font_11x18, 1);
+		break;
+	case 7:
+		SSD1306_Puts ("7", &Font_11x18, 1);
+		break;
+	case 8:
+		SSD1306_Puts ("8", &Font_11x18, 1);
+		break;
+	case 9:
+		SSD1306_Puts ("9", &Font_11x18, 1);
+		break;
+	case 10:
+		SSD1306_Puts ("10", &Font_11x18, 1);
+		break;
+	}
+}
+uint16_t value = 0;
+
+int main(void)
+{
+  /* USER CODE BEGIN 1 */
+
+
+  /* USER CODE END 1 */
+
+  /* MCU Configuration--------------------------------------------------------*/
+
+  /* Reset of all peripherals, Initializes the Flash interface and the Systick. */
+  HAL_Init();
+
+  /* USER CODE BEGIN Init */
+
+  /* USER CODE END Init */
+
+  /* Configure the system clock */
+  SystemClock_Config();
+
+  /* USER CODE BEGIN SysInit */
+
+  /* USER CODE END SysInit */
+
+  /* Initialize all configured peripherals */
+  MX_GPIO_Init();
+  MX_ADC1_Init();
+  MX_I2C1_Init();
+  MX_TIM1_Init();
+  /* USER CODE BEGIN 2 */
+  //HAL_ADC_Start(&hadc1);
+  SSD1306_Init (); // initialize the display
+  SSD1306_Clear();
+  SSD1306_GotoXY (10,10); // goto 10, 10
+  //SSD1306_Puts ("YOUR", &Font_11x18, 1);
+  /* USER CODE END 2 */
+
+  /* Infinite loop */
+  /* USER CODE BEGIN WHILE */
+  while (1)
+  {
+    /* USER CODE END WHILE */
+
+    /* USER CODE BEGIN 3 */
+
+	 // HAL_ADC_Start(&hadc1);
+
+	  value = get_value();
+
+	 // HAL_ADC_Stop(&hadc1);
+	  //char dig5 = '0'+5;
+	  //SSD1306_DrawFilledRectangle(1, 1, 128, 32, 0);
+	  SSD1306_GotoXY (10, 10); // goto 10, 10
+	  SSD1306_Puts ("FORCE", &Font_11x18, 1);
+	  SSD1306_GotoXY (10, 30);
+	  scale (value);
+	  SSD1306_UpdateScreen();
+	  SSD1306_Clear();
+	  HAL_Delay(1);
+
+
+  }
+  /* USER CODE END 3 */
+}
 
